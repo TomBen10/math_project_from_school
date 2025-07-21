@@ -3,7 +3,7 @@
 USAGE
     ./102architect x y [transfo1 arg11 [arg12]] [transfo2 arg21 [arg22]] ...
 
-DESCRIPTION\n
+DESCRIPTION
     x abscissa of the original point
     y ordinate of the original point
     transfo arg1 [arg2]
