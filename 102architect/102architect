@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+import math
+import sys
+
+def check_if_number(nbr):
+    try:
+        float(nbr)
+        return True
+    except ValueError:
+        return False
+
+def multiply_matrices(matrix1, matrix2):
+    matrixresult1 = [0, 0, 0]
+    matrixresult2 = [0, 0, 0]
+    matrixresult3 = [0, 0, 0]
+    matrixresult = [matrixresult1, matrixresult2, matrixresult3]
+
+    matrixresult[0][0] = matrix1[0][0] * matrix2[0][0] + matrix1[0][1] * matrix2[1][0] + matrix1[0][2] * matrix2[2][0]
+    matrixresult[0][1] = matrix1[0][0] * matrix2[0][1] + matrix1[0][1] * matrix2[1][1] + matrix1[0][2] * matrix2[2][1]
+    matrixresult[0][2] = matrix1[0][0] * matrix2[0][2] + matrix1[0][1] * matrix2[1][2] + matrix1[0][2] * matrix2[2][2]
+    matrixresult[1][0] = matrix1[1][0] * matrix2[0][0] + matrix1[1][1] * matrix2[1][0] + matrix1[1][2] * matrix2[2][0]
+    matrixresult[1][1] = matrix1[1][0] * matrix2[0][1] + matrix1[1][1] * matrix2[1][1] + matrix1[1][2] * matrix2[2][1]
+    matrixresult[1][2] = matrix1[1][0] * matrix2[0][2] + matrix1[1][1] * matrix2[1][2] + matrix1[1][2] * matrix2[2][2]
+    matrixresult[2][0] = matrix1[2][0] * matrix2[0][0] + matrix1[2][1] * matrix2[1][0] + matrix1[2][2] * matrix2[2][0]
+    matrixresult[2][1] = matrix1[2][0] * matrix2[0][1] + matrix1[2][1] * matrix2[1][1] + matrix1[2][2] * matrix2[2][1]
+    matrixresult[2][2] = matrix1[2][0] * matrix2[0][2] + matrix1[2][1] * matrix2[1][2] + matrix1[2][2] * matrix2[2][2]
+
+    return matrixresult
+
+def architect(args):
+    global a
+    global b
+    global matrix
+    i = 3
+    if len(args) == 0:
+        exit(84)
+    if len(args) <= 3:
+        exit(84)
+    a = int(args[1])
+    b = int(args[2])
+    matrix1 = [1, 0, 0]
+    matrix2 = [0, 1, 0]
+    matrix3 = [0, 0, 1]
+    matrix = [matrix1, matrix2, matrix3]
+
+    while i < len(args):
+        if (args[i] == '-t'):
+            if i + 2 >= len(args):
+                exit(84)
+            if not check_if_number(args[i + 1]) or not check_if_number(args[i + 2]):
+                exit(84)
+            flag_t(int(args[i + 1]), int(args[i + 2]))
+            i += 3
+        elif (args[i] == '-z'):
+            if i + 2 >= len(args):
+                exit(84)
+            if not check_if_number(args[i + 1]) or not check_if_number(args[i + 2]):
+                exit(84)
+            flag_z(int(args[i + 1]), int(args[i + 2]))
+            i += 3
+        elif (args[i] == '-r'):
+            if i + 1 >= len(args):
+                exit(84)
+            if not check_if_number(args[i + 1]):
+                exit(84)
+            flag_r(int(args[i + 1]))
+            i += 2
+        elif (args[i] == '-s'):
+            if i + 1 >= len(args):
+                exit(84)
+            if not check_if_number(args[i + 1]):
+                exit(84)
+            flag_s(int(args[i + 1]))
+            i += 2
+        else:
+            exit(84)
+
+    for i in range(3):
+        if matrix[0][i] > -0.01 and matrix[0][i] < 0:
+            matrix[0][i] *= -1
+        if matrix[1][i] > -0.01 and matrix[1][i] < 0:
+            matrix[1][i] *= -1
+        if matrix[2][i] > -0.01 and matrix[2][i] < 0:
+            matrix[2][i] *= -1
+
+    if a > -0.01 and a < 0:
+        a *= -1
+    if b > -0.01 and b < 0:
+        b *= -1
+
+    print(f'{matrix[0][0]:.2f}   {matrix[0][1]:.2f}   {matrix[0][2]:.2f}')
+    print(f'{matrix[1][0]:.2f}   {matrix[1][1]:.2f}   {matrix[1][2]:.2f}')
+    print(f'{matrix[2][0]:.2f}   {matrix[2][1]:.2f}   {matrix[2][2]:.2f}')
+    print(f'({int(args[1]):.2f}, {int(args[2]):.2f}) => ({a:.2f}, {b:.2f})')
+
+def flag_t(x, y):
+    global a
+    global b
+    global matrix
+    matrix_local1 = [1, 0, x]
+    matrix_local2 = [0, 1, y]
+    matrix_local3 = [0, 0, 1]
+    matrix_local = [matrix_local1, matrix_local2, matrix_local3]
+    matrix = multiply_matrices(matrix_local, matrix)
+    a += x
+    b += y
+    print(f'Translation along vector ({x}, {y})')
+
+def flag_z(x, y):
+    global a
+    global b
+    global matrix
+    matrix_local1 = [x, 0, 0]
+    matrix_local2 = [0, y, 0]
+    matrix_local3 = [0, 0, 1]
+    matrix_local = [matrix_local1, matrix_local2, matrix_local3]
+    matrix = multiply_matrices(matrix_local, matrix)
+    a = a * x
+    b = b * y
+    print(f'Scaling by factors {x} and {y}')
+
+def flag_r(x):
+    global a
+    global b
+    global matrix
+    local_a = a
+    matrix_local1 = [math.cos(math.radians(x)), -math.sin(math.radians(x)), 0]
+    matrix_local2 = [math.sin(math.radians(x)), math.cos(math.radians(x)), 0]
+    matrix_local3 = [0, 0, 1]
+    matrix_local = [matrix_local1, matrix_local2, matrix_local3]
+    matrix = multiply_matrices(matrix_local, matrix)
+    a = math.cos(math.radians(x)) * a + -math.sin(math.radians(x)) * b
+    b = math.sin(math.radians(x)) * local_a + math.cos(math.radians(x)) * b
+    print(f'Rotation by a {x} degree angle')
+
+def flag_s(x):
+    global a
+    global b
+    global matrix
+    local_a = a
+    matrix_local1 = [math.cos(math.radians(2 * x)), math.sin(math.radians(2 * x)), 0]
+    matrix_local2 = [math.sin(math.radians(2 * x)), -math.cos(math.radians(2 * x)), 0]
+    matrix_local3 = [0, 0, 1]
+    matrix_local = [matrix_local1, matrix_local2, matrix_local3]
+    matrix = multiply_matrices(matrix_local, matrix)
+    a = math.cos(math.radians(2 * x)) * a + math.sin(math.radians(2 * x)) * b
+    b = math.sin(math.radians(2 * x)) * local_a + -math.cos(math.radians(2 * x)) * b
+    print(f'Reflection over an axis with an inclination angle of {x} degrees')
+
+architect(sys.argv)

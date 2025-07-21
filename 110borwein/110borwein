@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+import math
+import sys
+
+
+def print_all(methode, somme, num):
+    print(methode)
+    print("I{}".format(num), "= {:.10f}".format(somme))
+    print("diff = {:.10f}\n".format((math.pi / 2) - somme))
+
+
+def simpson(num):
+    a = 0
+    b = 5000
+    n = 10000
+    h = (b - a) / n
+    sum_mid = 0
+
+    for i in range(n):
+        x_mid = a + i * h + h / 2
+        sum_mid += borwein(num, x_mid)
+    sum_inner = 0
+    for i in range(1, n):
+        x = a + i * h
+        sum_inner += borwein(num, x)
+    total = borwein(num, a) + borwein(num, b)
+    total += 4 * sum_mid
+    total += 2 * sum_inner
+    result = (h / 6) * total
+    print_all("Simpson:", result, num)
+    return 0
+
+
+def trapezoids(num):
+    a = 0
+    b = 5000
+    n = 10000
+    h = (b - a) / n
+
+    somme = 0
+    for i in range(1, n):
+        somme += borwein(num, a + i * h)
+    somme *= 2
+    somme += borwein(num, a) + borwein(num, b)
+    somme *= (h / 2)
+    print_all("Trapezoidal:", somme, num)
+    return 0
+
+
+def midpoint(num):
+    a = 0
+    b = 5000
+    n = 10000
+    h = (b - a) / n
+    somme = 0
+
+    for i in range(n):
+        somme += borwein(num, a + i * h + h / 2)
+    somme *= h
+    print_all("Midpoint:", somme, num)
+    return 0
+
+
+def borwein(num, x):
+    if x == 0:
+        return 1
+    prod = 1
+    for i in range(num + 1):
+        prod *= math.sin(x / (2 * i + 1)) / (x / (2 * i + 1))
+    return prod
+
+
+def main(argv):
+    if len(argv) != 2:
+        exit(84)
+    try:
+        num = int(argv[1])
+    except ValueError:
+        exit(84)
+    if num <= -1:
+        exit(84)
+    midpoint(num)
+    trapezoids(num)
+    simpson(num)
+    return 0
+
+
+main(sys.argv)
