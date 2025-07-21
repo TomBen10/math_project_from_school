@@ -1,6 +1,7 @@
 102architect
 
 USAGE
+
     ./102architect x y [transfo1 arg11 [arg12]] [transfo2 arg21 [arg22]] ...
 
 DESCRIPTION
@@ -18,7 +19,9 @@ DESCRIPTION
 110borwein
 
 USAGE
+
     ./110borwein n
 
 DESCRIPTION
+
     n constant defining the integral to be computed
